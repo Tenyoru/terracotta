@@ -5,12 +5,10 @@
   outputs = { self, nixpkgs }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
-
-    gdalPg = pkgs.gdal.overrideAttrs (old: {
-      cmakeFlags = (old.cmakeFlags or []) ++ [ "-DGDAL_ENABLE_DRIVER_PG=ON" ];
-      buildInputs = (old.buildInputs or []) ++ [ pkgs.postgresql ];
-      dontCheck = true; # faster build
-    });
+    gdalPg = pkgs.gdal.override {
+      usePostgres = true;
+      useMinimalFeatures = false;
+    };
 
   in {
     devShells.${system}.default = pkgs.mkShell {
